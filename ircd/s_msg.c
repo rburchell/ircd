@@ -64,7 +64,7 @@ extern	int	connect_server PROTO((aConfItem *));
 extern	int	close_connection PROTO((aClient *));
 extern	int	check_client PROTO((aClient *, int));
 extern	int	find_kill PROTO((aClient *));
-extern	char	*debugmode, *configfile;
+extern	char	*debugmode;
 extern	char	*get_client_name PROTO((aClient *, int));
 extern	char	*my_name_for_link PROTO((char *, aConfItem *));
 extern	int	highest_fd, debuglevel;
@@ -2978,9 +2978,9 @@ char *parv[];
 			   me.name, ERR_NOPRIVILEGES, parv[0]);
 		return -1;
 	    }
-	sendto_one(sptr,":%s %d %s :Rehashing %s",
-		   me.name, RPL_REHASHING, parv[0], configfile);
-	sendto_ops("Rehashing Server config file (%s)",configfile);
+	sendto_one(sptr,":%s %d %s :Rehashing ircd.conf",
+		   me.name, RPL_REHASHING, parv[0]);
+	sendto_ops("Rehashing Server config file");
 #ifdef USE_SYSLOG
 	syslog(LOG_INFO, "REHASH From %s\n", get_client_name(sptr, FALSE));
 #endif

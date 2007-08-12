@@ -45,19 +45,9 @@
  * The following are additional symbols to define. If you are not
  * sure about them, leave them all defined as they are.
  *
- * NOTE: *BEFORE* undefining NEED_STRERROR, check to see if your library
- *	 version returns NULL on an unknown error. If so, then I strongly
- *	 recommend you use this version as provided.
- *
  * If you get loader errors about unreferenced function calls, you must
  * define the following accordingly:
  */
-#if defined(NEXT) || defined(HPUX)
-#undef	NEED_STRERROR
-#else
-#define	NEED_STRERROR		/* Your libc.a not ANSI-compatible and has */
-				/* no strerror() */
-#endif
 
 #define	NEED_STRTOKEN		/* Your libc.a does not have strtoken(3) */
 #undef	NEED_STRTOK		/* Your libc.a does not have strtok(3) */
@@ -65,6 +55,7 @@
 #undef	NEED_INET_NTOA  	/* You need inet_ntoa(3)	*/
 #undef	NEED_INET_NETOF 	/* You need inet_netof(3)	*/
 #undef	NEED_STRCASECMP		/* You need strcasecmp(3s)	*/
+
 /*
  * NOTE: On some systems, valloc() causes many problems.
  */
@@ -128,9 +119,7 @@
  * these are only the recommened names and paths. Change as needed.
  * You must define these to something, even if you don't really want them.
  */
-
 #define	SPATH "/usr/local/bin/ircd" /* Where the server lives.  */
-#define	CPATH "/usr/local/lib/ircd.conf" /* IRC configuration file.  */
 #define	MPATH "/usr/local/lib/ircd.motd" /* message of the day file. */
 #define	LPATH "/tmp/ircd.log" /* Where the debug file lives, if DEBUGMODE */
 #define	PPATH "/usr/local/lib/ircd.pid" /* where the server's pid is */
@@ -287,12 +276,6 @@
  * *NOT* paranoid about hostname lookups in this way.
  */
 #undef	GETHOST
-
-/*
- * define this if you want to use crypted passwords for operators in your
- * ircd.conf file. See ircd/crypt/README for more details on this.
- */
-#define	CRYPT_OPER_PASSWORD
 
 /*
  * define this if you enable summon and if you want summon to look for the
@@ -468,7 +451,6 @@
 /* ------------------------- END CONFIGURATION SECTION -------------------- */
 #define MOTD MPATH
 #define	MYNAME SPATH
-#define	CONFIGFILE CPATH
 #define	IRCD_PIDFILE PPATH
 
 #ifdef DEBUGMODE

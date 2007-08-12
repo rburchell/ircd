@@ -64,7 +64,6 @@ char conf_id[] = "conf.c v2.0 (c) 1988 University of Oulu, Computing Center\
 aConfItem	*conf = (aConfItem *)NULL;
 
 extern	int	portnum;
-extern	char	*configfile;
 extern	long	nextconnect, nextping;
 
 static	int	check_time_interval();
@@ -488,7 +487,7 @@ int rehashing;
 	struct hostent *hp;
 
 	debug(DEBUG_DEBUG, "initconf(%d)", rehashing);
-	if ((fd = open(configfile, O_RDONLY)) == -1)
+	if ((fd = open("ircd.conf", O_RDONLY)) == -1)
 		return(-1);
 	while (dgets(fd,line,sizeof(line)-1)>0)
 	    {

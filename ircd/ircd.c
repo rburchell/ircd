@@ -46,7 +46,6 @@ extern	void write_pidfile ();
 
 char	**myargv;
 int	portnum = -1;               /* Server port number, listening this */
-char	*configfile = CONFIGFILE;	/* Server configuration file */
 int	debuglevel = -1;		/* Server debug level */
 int	debugtty = 0;
 int	autodie = 0;
@@ -359,12 +358,6 @@ char	*argv[];
 			autodie = 1;
                         debugtty = -1;  /* mark fd 0 to be oper connection */
 		        break;
-#ifdef CMDLINE_CONFIG
-		    case 'f':
-                        setuid(getuid());
-			configfile = p;
-			break;
-#endif
 		    case 'h':
 			strncpyzt(me.name, p, sizeof(me.name));
 			break;
@@ -442,8 +435,8 @@ char	*argv[];
 	if (initconf(bootopt & 2) == -1)
 	    {
 		debug(DEBUG_FATAL,
-			"Failed in reading configuration file %s", configfile);
-		printf("Couldn't open configuration file %s\n", configfile);
+			"Couldn't open ircd.conf");
+		printf("Couldn't open ircd.conf\n");
 		exit(-1);
 	    }
 	get_my_name(me.name, me.sockhost,sizeof(me.sockhost)-1);
