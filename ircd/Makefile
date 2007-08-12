@@ -20,7 +20,7 @@
 # IRCDMODE given in top level Makefile, but added here to make sure
 # compilation works if started in ircd subdirectory
 
-CC=cc
+CC=gcc
 RM=/bin/rm
 SHELL=/bin/sh
 
@@ -30,9 +30,7 @@ INCLUDE=../include
 # For MIPS, use the following:
 # CFLAGS= -O -systype bsd43 -DSYSTYPE_BSD43 -I${INCLUDE}
 CFLAGS= -O -I${INCLUDE}
-#use the following on SUN OS without nameserver libraries inside libc
-##NOTE: most dont have the resolver libraries inside libc
-#IRCDLIBS= -lresolv
+
 #
 #on NeXT other than 2.0:
 # IRCDLIBS=-lsys_s
@@ -64,7 +62,8 @@ build: ircd
 ircd: $(RESOBJS) $(OBJS) ../include/patchlevel.h
 	$(SHELL) version.c.SH
 	$(CC) $(CFLAGS) -c version.c
-	$(CC) $(CFLAGS) $(RESOBJS) $(OBJS) version.o -o ircd $(IRCDLIBS)
+	$(CC) $(CFLAGS) $(RESOBJS) $(OBJS) version.o \
+		-o ircd $(IRCDLIBS)
 	chmod $(IRCDMODE) ircd
 
 auth: $(OBJS) authuser.o ../include/patchlevel.h
@@ -74,12 +73,6 @@ auth: $(OBJS) authuser.o ../include/patchlevel.h
 		-o ircd $(IRCDLIBS)
 	chmod $(IRCDMODE) ircd
 
-bindircd: $(RESOBJS) $(OBJS) ../include/patchlevel.h
-	$(SHELL) version.c.SH
-	$(CC) $(CFLAGS) -c version.c
-	$(CC) $(CFLAGS) $(RESOBJS) $(OBJS) version.o \
-		-o ircd $(IRCDLIBS)
-	chmod $(IRCDMODE) ircd
 
 authbind: $(OBJS) $(RESOBJS) authuser.o ../include/patchlevel.h
 	$(SHELL) version.c.SH
