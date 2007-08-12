@@ -43,19 +43,13 @@ CFLAGS= -O -I${INCLUDE}
 #and otherwise:
 #IRCDLIBS=
 
-OBJS=channel.o ircd.o list.o s_bsd.o s_conf.o s_msg.o s_numeric.o\
-     whowas.o s_debug.o class.o hash.o note.o s_misc.o
+OBJS=channel.o ircd.o list.o s_bsd.o s_conf.o s_msg.o s_numeric.o \
+     whowas.o s_debug.o class.o hash.o note.o s_misc.o \
+     bsd.o dbuf.o packet.o send.o match.o parse.o support.o
 
-SRC=channel.c ircd.c list.c s_bsd.c s_conf.c s_msg.c s_numeric.c\
-     whowas.c s_debug.c class.c note.c hash.c s_misc.c authuser.c
-
-COMMONOBJS=../common/bsd.o ../common/dbuf.o \
-           ../common/packet.o ../common/send.o\
-           ../common/match.o ../common/parse.o ../common/support.o
-
-COMMONSRC=../common/bsd.c ../common/dbuf.c \
-	  ../common/packet.c ../common/send.c\
-	  ../common/match.c ../common/parse.c ../common/support.c
+SRC=channel.c ircd.c list.c s_bsd.c s_conf.c s_msg.c s_numeric.c \
+     whowas.c s_debug.c class.c note.c hash.c s_misc.c authuser.c \
+     bsd.c dbuf.c packet.c parse.c send.c match.c support.c
 
 RESOBJS= ../res/res_init.o ../res/res_comp.o ../res/res_query.o \
 	../res/res_debug.o ../res/res_mkquery.o ../res/res_send.o \
@@ -67,30 +61,30 @@ all: build
 
 build: ircd
 
-ircd: $(OBJS) $(COMMONOBJS) ../include/patchlevel.h
+ircd: $(RESOBJS) $(OBJS) ../include/patchlevel.h
 	$(SHELL) version.c.SH
 	$(CC) $(CFLAGS) -c version.c
-	$(CC) $(CFLAGS) $(OBJS) $(COMMONOBJS) version.o -o ircd $(IRCDLIBS)
+	$(CC) $(CFLAGS) $(RESOBJS) $(OBJS) version.o -o ircd $(IRCDLIBS)
 	chmod $(IRCDMODE) ircd
 
-auth: $(OBJS) $(COMMONOBJS) authuser.o ../include/patchlevel.h
+auth: $(OBJS) authuser.o ../include/patchlevel.h
 	$(SHELL) version.c.SH
 	$(CC) $(CFLAGS) -c version.c
-	$(CC) $(CFLAGS) $(OBJS) $(COMMONOBJS) authuser.o version.o \
+	$(CC) $(CFLAGS) $(OBJS) authuser.o version.o \
 		-o ircd $(IRCDLIBS)
 	chmod $(IRCDMODE) ircd
 
-bindircd: $(RESOBJS) $(OBJS) $(COMMONOBJS) ../include/patchlevel.h
+bindircd: $(RESOBJS) $(OBJS) ../include/patchlevel.h
 	$(SHELL) version.c.SH
 	$(CC) $(CFLAGS) -c version.c
-	$(CC) $(CFLAGS) $(RESOBJS) $(OBJS) $(COMMONOBJS) version.o \
+	$(CC) $(CFLAGS) $(RESOBJS) $(OBJS) version.o \
 		-o ircd $(IRCDLIBS)
 	chmod $(IRCDMODE) ircd
 
-authbind: $(OBJS) $(COMMONOBJS) $(RESOBJS) authuser.o ../include/patchlevel.h
+authbind: $(OBJS) $(RESOBJS) authuser.o ../include/patchlevel.h
 	$(SHELL) version.c.SH
 	$(CC) $(CFLAGS) -c version.c
-	$(CC) $(CFLAgS) $(OBJS) $(COMMONOBJS) $(RESOBJS) authuser.o version.o \
+	$(CC) $(CFLAgS) $(OBJS) $(RESOBJS) authuser.o version.o \
 		-o ircd $(IRCDLIBS)
 	chmod $(IRCDMODE) ircd
 
@@ -180,3 +174,17 @@ res_query.o: ../include/resolv.h ../include/nameser.h
 res_mkquery.o: ../include/resolv.h ../include/nameser.h
 res_send.o: ../include/resolv.h ../include/nameser.h
 authuser.o: ../include/authuser.h
+bsd.o: ../include/common.h ../include/sys.h ../include/config.h
+dbuf.o: ../include/config.h ../include/common.h ../include/dbuf.h
+dbuf.o: ../include/sys.h
+packet.o: ../include/struct.h ../include/config.h ../include/class.h
+packet.o: ../include/dbuf.h ../include/common.h ../include/msg.h
+parse.o: ../include/struct.h ../include/config.h
+parse.o: ../include/class.h ../include/dbuf.h ../include/common.h
+parse.o: ../include/msg.h ../include/sys.h
+parse.o: ../include/numeric.h
+send.o: ../include/struct.h ../include/config.h ../include/class.h
+send.o: ../include/dbuf.h ../include/common.h
+match.o: ../include/config.h ../include/common.h ../include/sys.h
+support.o: ../include/config.h ../include/common.h ../include/sys.h
+

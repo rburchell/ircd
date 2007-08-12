@@ -58,18 +58,16 @@ char conf_id[] = "conf.c v2.0 (c) 1988 University of Oulu, Computing Center\
 #include "netdb.h"
 #include <sys/socket.h>
 #include <fcntl.h>
-#ifdef __hpux
-#include "inet.h"
-#endif
-#ifdef PCS
 #include <time.h>
-#endif
+#include <sys/time.h>
 
 aConfItem	*conf = (aConfItem *)NULL;
 
 extern	int	portnum;
 extern	char	*configfile;
 extern	long	nextconnect, nextping;
+
+static	int	check_time_interval();
 
 static aConfItem *make_conf()
     {
@@ -706,7 +704,6 @@ aClient	*cptr;
 {
 	char	reply[256], *host, *name;
 	aConfItem *tmp;
-	static	int	check_time_interval();
 
 	if (cptr->user == NULL)
 		return 0;

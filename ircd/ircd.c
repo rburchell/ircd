@@ -58,6 +58,8 @@ int	maxusersperchannel = MAXUSERSPERCHANNEL;
 long	nextconnect = -1;		/* time for next try_connections call */
 long	nextping = -1;		/* same as above for check_pings() */
 
+static	int open_log();
+
 VOIDSIG terminate()
 {
   flush_connections(me.fd);
@@ -302,7 +304,6 @@ char	*argv[];
 	int	bootopt = 0, foo;
 	char	buffer[BUFSIZE];
 	long	delay = 0, now;
-	static	int open_log();
 
 	myargv = argv;
 	umask(077);                /* better safe than sorry --SRB */

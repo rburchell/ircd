@@ -32,10 +32,6 @@ char smisc_id[]="s_misc.c v2.0 (c) 1988 University of Oulu, Computing Centers\
 #include "numeric.h"
 #include <sys/stat.h>
 #include <fcntl.h>
-#ifdef HPUX
-# include <sys/syscall.h>
-# define getrusage(a,b) syscall(SYS_GETRUSAGE, a, b)
-#endif
 #ifdef GETRUSAGE_2
 # include <sys/resource.h>
 #else
@@ -43,19 +39,21 @@ char smisc_id[]="s_misc.c v2.0 (c) 1988 University of Oulu, Computing Centers\
 #   include <sys/times.h>
 #  endif
 #endif
-#ifdef PCS
-# include <time.h>
-#endif
+#include <time.h>
+#include <sys/time.h>
 #ifdef HPUX
 #include <unistd.h>
 #endif
 
 extern	aClient	*client, *local[];
-extern	int	highest_fd, errno;
+extern	int	highest_fd;
 #ifdef DEBUGMODE
 extern	int	readcalls, writecalls, writeb[];
 #endif
 extern	int	dbufalloc, dbufblocks;
+
+static	int	exit_one_client();
+
 
 static char *months[] = {
 	"January",	"February",	"March",	"April",
@@ -279,7 +277,6 @@ char	*comment;	/* Reason for the exit */
     {
 	Reg1	aClient	*acptr;
 	Reg2	aClient	*next;
-	static	int	exit_one_client();
 #ifdef	FNAME_USERLOG
 	long	on_for;
 #endif
@@ -522,9 +519,8 @@ char *nick;
 
 	if (getrusage(RUSAGE_SELF, &rus) == -1)
 	    {
-		extern char *sys_errlist[];
 		sendto_one(cptr,":%s NOTICE %s :Getruseage error: %s.",
-			   me.name, nick, sys_errlist[errno]);
+			   me.name, nick, strerror(errno));
 		return 0;
 	    }
 	secs = rus.ru_utime.tv_sec + rus.ru_stime.tv_sec;
@@ -569,7 +565,6 @@ char *nick;
 
 	if (times(&tmsbuf) == -1)
 	    {
-		extern char *sys_errlist[];
 		sendto_one(cptr,":%s NOTICE %s :times(2) error: %s.",
 			   me.name, nick, strerror(errno));
 		return 0;

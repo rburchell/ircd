@@ -2802,11 +2802,6 @@ char *parv[];
     {
 	aConfItem *aconf;
 	char *name, *password, *encr;
-#ifdef CRYPT_OPER_PASSWORD
-	char salt[3];
-	extern char *crypt();
-#endif /* CRYPT_OPER_PASSWORD */
-
 
 	name = parc > 1 ? parv[1] : NULL;
 	password = parc > 2 ? parv[2] : NULL;
@@ -2860,23 +2855,7 @@ char *parv[];
 			   me.name, ERR_NOOPERHOST, parv[0]);
 		return 0;
 	    }
-#ifdef CRYPT_OPER_PASSWORD
-        /* use first two chars of the password they send in as salt */
-
-        /* passwd may be NULL. Head it off at the pass... */
-        salt[0]='\0';
-        if(password != NULL)
-	    {
-        	salt[0]=aconf->passwd[0];
-		salt[1]=aconf->passwd[1];
-		salt[2]='\0';
-		encr = crypt(password, salt);
-	    }
-	else
-		encr = "";
-#else
 	encr = password;
-#endif  /* CRYPT_OPER_PASSWORD */
 
 	if ((aconf->status & (CONF_OPERATOR | CONF_LOCOP))
 	    && StrEq(encr, aconf->passwd))
