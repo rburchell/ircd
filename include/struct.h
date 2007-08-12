@@ -138,9 +138,6 @@ typedef struct User anUser;
 #define CONF_ME                 0x0040
 #define CONF_KILL               0x0080
 #define CONF_ADMIN              0x0100
-#ifdef R_LINES
-#define CONF_RESTRICT           0x0200
-#endif
 #define CONF_CLASS              0x0400
 #define CONF_SERVICE            0x0800
 #define CONF_LEAF		0x1000

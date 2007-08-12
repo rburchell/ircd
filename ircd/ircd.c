@@ -37,9 +37,6 @@ extern	aClient *find_name PROTO((char *, aClient *));
 extern	aClient	*add_connection PROTO((aClient *, int));
 extern	aClient	*local[];
 extern	int find_kill PROTO((aClient *));
-#if defined(R_LINES) && defined(R_LINES_OFTEN)
-extern	int find_restrict PROTO((aClient *));
-#endif
 extern	void clear_channel_hash_table();
 extern	void clear_client_hash_table();
 extern	void write_pidfile ();
@@ -191,7 +188,7 @@ long currenttime;
 {		
   Reg1	aClient	*cptr;
   Reg2	int	killflag;
-  int	ping = 0, i, rflag = 0;
+  int	ping = 0, i;
   long	oldest = 0, timeout;
 
   for (i = 0; i < MAXCONNECTIONS; i++)
@@ -210,11 +207,8 @@ long currenttime;
       }
       
       killflag = IsPerson(cptr) ? find_kill(cptr) : 0;
-#ifdef R_LINES_OFTEN
-      rflag = IsPerson(cptr) ? find_restrict(cptr) : 0;
-#endif
       ping = get_client_ping(cptr);
-      if (killflag || ((currenttime - cptr->lasttime) >= ping) || rflag)
+      if (killflag || ((currenttime - cptr->lasttime) >= ping))
        {
 	/*
 	 * If the server hasnt talked to us in 2*ping seconds
@@ -224,8 +218,7 @@ long currenttime;
 	 */
 	if (((currenttime - cptr->lasttime) >= (2 * ping) &&
 	     (cptr->flags & FLAGS_PINGSENT)) ||
-	    (IsUnknown(cptr) && (currenttime - cptr->since) >= ping) ||
-	    killflag || rflag)
+	    (IsUnknown(cptr) && (currenttime - cptr->since) >= ping) || killflag)
 	 {
 	  if (IsServer(cptr))
 	    sendto_ops("No response from %s, closing link",
@@ -239,11 +232,6 @@ long currenttime;
 	    sendto_ops("Kill line active for %s, closing link",
 		       get_client_name(cptr, FALSE));
 
-#if defined(R_LINES) && defined(R_LINES_OFTEN)
-	  if (IsPerson(cptr) && rflag)
-	      sendto_ops("Restricting %s, closing link.",
-			 get_client_name(cptr,FALSE));
-#endif
 	  exit_client((aClient *)NULL, cptr, &me, "Ping timeout");
 	  /*
 	   * need to start loop over because the close can affect the ordering

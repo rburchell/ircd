@@ -67,10 +67,6 @@ extern	char	*my_name_for_link PROTO((char *, aConfItem *));
 extern	int	highest_fd, debuglevel;
 extern	long	nextping;
 
-#ifdef	R_LINES
-extern	int	find_restrict PROTO((aClient *));
-#endif		
-
 #ifdef IDENT
 extern int  auth_fd2();
 extern char *auth_tcpuser3();
@@ -336,10 +332,6 @@ char	*nick;
 	     */
 	    if (find_kill(sptr))
 		return exit_client(cptr,sptr,sptr,"K-lined");
-#ifdef R_LINES
-	    if (find_restrict(sptr))
-		return exit_client(cptr, sptr, sptr , "R-lined");
-#endif
 	    if (IsUnixSocket(sptr))
 		strncpyzt(user->host, me.sockhost, HOSTLEN+1);
 	    else
@@ -2983,29 +2975,6 @@ char *parv[];
 #endif
 
 	rehash();
-
-#if defined(R_LINES_REHASH) && !defined(R_LINES_OFTEN)
-	{
-	  Reg1	aClient	*acptr;
-	  Reg2	int	i;
-
-	  
-	  for (i = 0; i <= highest_fd; i++)
-	    
-	    if ((acptr = local[i]) && !IsMe(acptr))
-	      {
-		if (find_restrict(acptr))
-		  {
-		    sendto_ops("Restricting %s, closing link",
-				get_client_name(acptr,FALSE));
-		    if (exit_client(cptr, acptr, sptr, "R-lined")
-			== FLUSH_BUFFER)
-			    /* Oh My! An oper R-lined himself!! :-) --msa */
-			    return FLUSH_BUFFER;
-		  }
-	      }
-	}
-#endif
 	return 0;
     }
 

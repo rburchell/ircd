@@ -564,12 +564,6 @@ int rehashing;
 		    case 'q':   /* network. USE WITH CAUTION! */
 		        aconf->status = CONF_QUARANTINED_SERVER;
   		        break;
-#ifdef R_LINES
-		    case 'R': /* extended K line */
-		    case 'r': /* Offers more options of how to restrict */
-		      aconf->status = CONF_RESTRICT;
-		      break;
-#endif
 		    case 'P': /* listen port line */
 		    case 'p':
 			aconf->status = CONF_LISTEN_PORT;
@@ -733,96 +727,6 @@ aClient	*cptr;
 
  	return (tmp ? -1 : 0);
  }
-
-#ifdef R_LINES
-/* find_restrict works against host/name and calls an outside program 
-   to determine whether a client is allowed to connect.  This allows 
-   more freedom to determine who is legal and who isn't, for example
-   machine load considerations.  The outside program is expected to 
-   return a reply line where the first word is either 'Y' or 'N' meaning 
-   "Yes Let them in" or "No don't let them in."  If the first word 
-   begins with neither 'Y' or 'N' the default is to let the person on.
-   It returns a value of 0 if the user is to be let through -Hoppie  */
-  
-int	find_restrict(cptr)
-aClient	*cptr;
-{
-	aConfItem *tmp;
-	char	cmdline[132], reply[80], temprpl[80];
-	char	*rplhold = reply, *host, *name, *s;
-	char	rplchar='Y';
-	FILE	*fp;
-	int	hlen, nlen, rc = 0;
-
-	if (cptr->user == NULL)
-		return 0;
-	name = cptr->user->username;
-	host = cptr->sockhost;
-	hlen = strlen(host);
-	nlen = strlen(name);
-
-	for (tmp = conf; tmp; tmp = tmp->next)
-	  if (tmp->status == CONF_RESTRICT &&
-	      (host == NULL || (matches(tmp->host, host) == 0)) &&
-	      (name == NULL || matches(tmp->name, name) == 0))
-	    {
-	      if (BadPtr(tmp->passwd))
-		sendto_ops("Program missing on R-line %s/%s, ignoring.",
-			   name,host);
-	      else
-		{
-		  if (strlen(tmp->passwd) + hlen + nlen > sizeof(cmdline))
-		    {
-		      sendto_ops("R-line command Too Long! %s %s %s",
-				tmp->passwd, name, host);
-		      continue;
-		    }
-		  sprintf(cmdline, "%s %s %s", tmp->passwd, name, host);
-
-		  if ((fp = popen(cmdline,"r")) == NULL)
-		    {
-		      sendto_ops("Couldn't run '%s' for R-line %s/%s",
-				 tmp->passwd, name, host);
-		      continue;
-		    }
-		  else
-		    {
-		      reply[0] = '\0';
-		      while (fgets(temprpl, sizeof(temprpl)-1, fp) != EOF)
-			{
-			  if (s = (char *)index(temprpl, '\n'))
-			      *s = '\0';
-			  if (strlen(temprpl) + strlen(reply) < 80)
-			      sprintf(rplhold, "%s %s", rplhold, temprpl);
-			  else
-			      sendto_ops("R-line %s/%s: reply too long!",
-					 name,host);
-			}
-		    }
-		  pclose(fp);
-
-		  while (*rplhold == ' ') rplhold++;
-		  rplchar = *rplhold; /* Pull out the yes or no */
-		  while (*rplhold != ' ') rplhold++;
-		  while (*rplhold == ' ') rplhold++;
-		  strcpy(reply,rplhold);
-		  rplhold = reply;
-
-		  if (rc = (rplchar == 'n' || rplchar == 'N'))
-		      break;
-		}
-	    }
-	if (rc)
-	    {
-		sendto_one(cptr, ":%s %d %s :Restriction: %s",
-			   me.name, ERR_YOUREBANNEDCREEP, cptr->name,
-			   reply);
-		return -1;
-	    }
-	return 0;
-      }
-#endif
-
 
 /*
 ** check against a set of time intervals
