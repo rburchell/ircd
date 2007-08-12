@@ -184,10 +184,6 @@ typedef struct User anUser;
 #define BUFSIZE		512
 #define UTMP         "/etc/utmp"
 
-#define DUMMY_TERM     0
-#define CURSES_TERM    1
-#define TERMCAP_TERM   2
-
 struct ConfItem
     {
 	int	status;		/* If CONF_ILLEGAL, delete when no clients */

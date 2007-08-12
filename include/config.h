@@ -92,21 +92,6 @@
 
 #define	DEBUGMODE		/* define DEBUGMODE to enable debugging mode.*/
 
-/*
- * If you have curses, and wish to use it, then define HAVECURSES. This is the
- * default mode. If you do not have termcap, then undefine HAVETERMCAP. This is
- * the default mode. You can use both HAVECURSES and HAVETERMCAP, but you must
- * define one of the two at least. Remember to check LIBFLAGS in the Makefiles.
- *
- * NOTICE: HAVECURSES and HAVETERMCAP are still under testing. Currently, use
- *  only HAVECURSES and not HAVETERMCAP. This is a temporary condition only.
- *
- * NOTE: These *ONLY* apply to the irc client in this package
- */
-
-#define	HAVECURSES		/* If you have curses, and want to use it.  */
-#undef	HAVETERMCAP		/* If you have termcap, and want to use it. */
-
 /* Define NPATH if you want to run NOTE system. Be sure that this file is
  * either not present or non empty (result of previous size). If it is empty,
  * then remove it before starting the server.
@@ -509,18 +494,6 @@ error You stuffed up config.h signals #defines use only one.
 
 #ifndef	HUB
 #define	MAXIMUM_LINKS	1
-#endif
-
-#ifdef HAVECURSES
-# define DOCURSES
-#else
-# undef DOCURSES
-#endif
-
-#ifdef HAVETERMCAP
-# define DOTERMCAP
-#else
-# undef DOTERMCAP
 #endif
 
 #ifndef	UNIXPORT
