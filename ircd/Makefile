@@ -125,9 +125,7 @@ saber: $(SRC)
 
 hash.o: ../include/struct.h ../include/sys.h ../include/hash.h hash.c \
 	../include/config.h
-	@crypt/sums
 	  $(CC) $(CFLAGS) -c hash.c
-	@/bin/mv -f hash.c.old hash.c
 clean:
 	${RM} -f *.o *~ core ircd version.c #* *.bak
 
