@@ -343,15 +343,8 @@ int	bootopt;
 #ifdef sequent
 	setdtablesize(SEQ_NOFILE);
 #endif
-#ifdef PCS
-	char logbuf[BUFSIZ];
-
-	setvbuf(stdout,logbuf,_IOLBF,sizeof(logbuf));
-	setvbuf(stderr,logbuf,_IOLBF,sizeof(logbuf));
-#else
 	setlinebuf(stdout);
 	setlinebuf(stderr);
-#endif
 
 #ifdef RLIMIT_FD_MAX
 	if (!getrlimit(RLIMIT_FD_MAX, &limit))
@@ -850,18 +843,10 @@ aClient *cptr;
     {
 	int res;
 
-#ifdef PCS
-	/* This portion of code might also apply to NeXT and sun.  -LynX */
-	res = 1;
-
-	if (ioctl (cptr->fd, FIONBIO, &res) < 0)
-		report_error("ioctl(fd,FIONBIO) failed for %s:%s",cptr);
-#else
 	if ((res = fcntl(cptr->fd, F_GETFL, 0)) == -1)
 		report_error("fcntl(fd,F_GETFL) failed for %s:%s",cptr);
 	else if (fcntl(cptr->fd, F_SETFL, res | FNDELAY) == -1)
 		report_error("fcntl(fd,F_SETL,FNDELAY) failed for %s:%s",cptr);
-#endif
 	return 0;
     }
 

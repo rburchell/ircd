@@ -21,12 +21,6 @@
 
 #define	BSD			/* 4.2 BSD, 4.3 BSD, SunOS 3.x, 4.x, Apollo */
 
-/* Do these work? I dunno... */
-
-#undef	VMS			/* Should work for IRC client, not server */
-#undef	MAIL50			/* If you're running VMS 5.0 */
-#undef	PCS			/* PCS Cadmus MUNIX, use with BSD flag! */
-
 /*
  * getrusage(2) is a BSDism used in s_misc.c. If you have both of these
  * use GETRUSEAGE_2 unless you get some compile time errors in which case
@@ -431,11 +425,7 @@
 #ifdef DEBUGMODE
 # define LOGFILE LPATH
 #else
-# if VMS
-#	define LOGFILE "NLA0:"
-# else
 #	define LOGFILE "/dev/null"
-# endif
 #endif
 
 #ifndef ENABLE_SUMMON
