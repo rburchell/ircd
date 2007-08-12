@@ -105,7 +105,6 @@
  * You must define these to something, even if you don't really want them.
  */
 #define	SPATH "/usr/local/bin/ircd" /* Where the server lives.  */
-#define	MPATH "/usr/local/lib/ircd.motd" /* message of the day file. */
 #define	LPATH "/tmp/ircd.log" /* Where the debug file lives, if DEBUGMODE */
 #define	PPATH "/usr/local/lib/ircd.pid" /* where the server's pid is */
 
@@ -434,7 +433,6 @@
 #define	SENDQ_ALWAYS
 
 /* ------------------------- END CONFIGURATION SECTION -------------------- */
-#define MOTD MPATH
 #define	MYNAME SPATH
 #define	IRCD_PIDFILE PPATH
 

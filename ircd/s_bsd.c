@@ -109,35 +109,6 @@ static	char	unixpath[256];
 #endif
 
 /*
-** add_local_domain()
-** Add the domain to hostname, if it is missing
-** (as suggested by eps@TOASTER.SFSU.EDU)
-*/
-
-static	char	*add_local_domain(hname, size)
-char	*hname;
-int	size;
-{
-#ifdef RES_INIT
-	/* try to fix up unqualified names */
-	if (!index(hname, '.'))
-	    {
-		if (!(_res.options & RES_INIT))
-		    {
-			debug(DEBUG_DNS,"res_init()");
-			res_init();
-		    }
-		if (_res.defdname[0])
-		    {
-			strncat(hname, ".", size-1);
-			strncat(hname, _res.defdname, size-2);
-		    }
-	    }
-#endif
-	return(hname);
-}
-
-/*
 ** AcceptNewConnections
 **	If TRUE, select() will be enabled for the listening socket
 **	(me.fd). If FALSE, it's not enabled and new connections are
@@ -197,6 +168,9 @@ int	port;
 
 	ad[0] = ad[1] = ad[2] = ad[3] = 0;
 
+	printf("Binding %d", port);
+	debug(DEBUG_ERROR,"Binding %d", port);
+
 	/*
 	 * do it this way because building ip# from separate values for each
 	 * byte requires endian knowledge or some nasty messing. Also means
@@ -238,32 +212,13 @@ int	port;
 	server.sin_addr.s_addr = INADDR_ANY;
 	server.sin_port = htons(port);
 
-	for (length = 0; length < 10; length++)
-	    {
-		if (bind(cptr->fd, &server, sizeof(server)))
-		    {
-			report_error("binding stream socket %s:%s", cptr);
-			if (length >= 9)
-			    {
-				close(cptr->fd);
-				return -1;
-			    }
-			sleep(20);
-		    }
-		else
-			break;
-	    }
-	if (cptr == &me) /* KLUDGE to get it work... */
-	 {
-	  char buf[1024];
-	  int len = sizeof(server);
-	  if (getsockname(cptr->fd, &server, &len))
-	  	exit(1);
+	if (bind(cptr->fd, &server, sizeof(server)))
+	{
+		report_error("binding stream socket %s:%s", cptr);
+		close(cptr->fd);
+		return -1;
+	}
 
-	  sprintf(buf, ":%s %d %d :Port to local server is\n",
-		  me.name, RPL_MYPORTIS, server.sin_port);
-	  write(0, buf, strlen(buf));
-	 }
 	if (cptr->fd > highest_fd)
 		highest_fd = cptr->fd;
 	SetMe(cptr);
@@ -608,7 +563,6 @@ int	flags;
 		for (name = hp->h_name; name ; name = hp->h_aliases[i++])
 		    {
 			strncpy(fullname, name, sizeof(fullname)-1);
-			add_local_domain(fullname,HOSTLEN-strlen(fullname));
 			debug(DEBUG_DNS, "ch_cl: gethostbyaddr: %s->%s",
 				sockname, fullname);
 
@@ -752,7 +706,6 @@ aClient	*cptr;
 		for (i = 0,name = hp->h_name; name ; name = hp->h_aliases[i++])
 		    {
 			strncpyzt(fullname, name, sizeof(fullname));
-			add_local_domain(fullname,HOSTLEN-strlen(fullname));
 			debug(DEBUG_DNS, "sv_cl: gethostbyaddr: %s->%s",
 				sockname, fullname);
 			if (!c_conf)
@@ -1528,10 +1481,6 @@ int	len;
 		return -1;
 	name[len] = '\0';
 
-	/* assume that a name containing '.' is a fully qualified domain name */
-	if (!index(name,'.'))
-		add_local_domain(name, len-strlen(name));
-
 	/* If hostname gives another name than conf_name, then check if there is
 	 * a CNAME record for conf_name pointing to hostname. If so accept
 	 * conf_name as our name.   meLazy
@@ -1549,7 +1498,6 @@ int	len;
 		for (hname = hp->h_name; hname; hname = hp->h_aliases[i++])
   		    {
 			strncpy(tmp, hname, sizeof(tmp));
-			add_local_domain(tmp,sizeof(tmp)-strlen(tmp));
 			if (!mycmp(tmp, conf_name))
 			    {
 				bcopy(hp->h_addr, (char *)&myip,

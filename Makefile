@@ -83,13 +83,6 @@ auth:
 	${MAKE} auth;\
 	cd ..;
 
-bindircd:
-	echo "Building common";\
-	cd common;\
-	${MAKE} build;\
-	cd ../ircd;\
-	${MAKE} bindircd;
-
 authbind:
 	echo "Building common";\
 	cd common;\

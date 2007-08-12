@@ -3191,25 +3191,15 @@ char *parv[];
 
 	if (hunt_server(cptr, sptr, ":%s MOTD :%s", 1,parc,parv)!=HUNTED_ISME)
 		return 0;
-#ifndef MOTD
-	sendto_one(sptr,
-		   ":%s NOTICE %s :*** No message-of-today %s %s",
-		   me.name, parv[0], "is available on host", me.name);
-#else
-	/*
-	 * stop NFS hangs...most systems should be able to open a file in
-	 * 3 seconds. -avalon (curtesy of wumpus)
-	 */
-	alarm(3);
-	if (!(fd = open(MOTD, O_RDONLY)))
-	    {
-		alarm(0);
+
+	if (!(fd = fopen("ircd.motd", "r")))
+	{
 		sendto_one(sptr,
 			   ":%s NOTICE %s :*** Message-of-today is %s %s",
 			   me.name, parv[0], "is missing on", me.name);
 		return 0;
-	    }
-	alarm(0);
+	}
+
 	sendto_one(sptr, ":%s NOTICE %s :MOTD - %s Message of the Day - ",
 		me.name, parv[0], me.name);
 	while (dgets(fd, line, sizeof(line) - 1))
@@ -3224,7 +3214,6 @@ char *parv[];
 	sendto_one(sptr, ":%s NOTICE %s :* End of /MOTD command.",
 		   me.name, parv[0]);
 	close(fd);
-#endif
 	return 0;
     }
 

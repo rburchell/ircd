@@ -439,7 +439,8 @@ char	*argv[];
 		printf("Couldn't open ircd.conf\n");
 		exit(-1);
 	    }
-	get_my_name(me.name, me.sockhost,sizeof(me.sockhost)-1);
+	// XXX - got sick of waiting
+	//get_my_name(me.name, me.sockhost,sizeof(me.sockhost)-1);
 	if (debugtty != -2)
 	    {
 		aConfItem	*aconf;
@@ -448,7 +449,13 @@ char	*argv[];
 			portnum = aconf->port;
 		if (inetport(&me, "*", portnum))
 			exit(1);
+		printf("Bound!\n");
 	    }
+	else
+	{
+		printf("Not binding\n");
+	}
+
 	/*
 	** If neither command line nor configuration defined any, use
 	** compiled default port and sockect hostname.
