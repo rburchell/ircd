@@ -33,8 +33,6 @@ extern unsigned long inet_addr();
 extern char *inet_ntoa();
 extern struct in_addr inet_makeaddr();
 #endif
-#ifndef  HPUX
 extern unsigned long inet_network();
 extern unsigned long inet_lnaof();
 extern unsigned long inet_netof();
-#endif

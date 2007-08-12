@@ -29,31 +29,9 @@
  *
  */
 
-#if defined(HPUX) || defined(VMS) || defined(AIX)
 #include <string.h>
-#define bcopy(a,b,s)  memcpy(b,a,s)
-#define bzero(a,s)    memset(a,0,s)
-#define bcmp          memcmp
-extern char *strchr(), *strrchr();
-extern char *inet_ntoa();
-#define index strchr
-#define rindex strrchr
-#else 
-#include <strings.h>
-#endif
-#include <pwd.h>
-
-#ifdef AIX
-#include <sys/select.h>
-#endif
-#if defined(HPUX )|| defined(AIX)
 #include <time.h>
-#ifdef AIX
 #include <sys/time.h>
-#endif
-#else
-#include <sys/time.h>
-#endif
 
 #ifdef NEXT
 #define VOIDSIG int	/* whether signal() returns int of void */

@@ -41,9 +41,6 @@ char smisc_id[]="s_misc.c v2.0 (c) 1988 University of Oulu, Computing Centers\
 #endif
 #include <time.h>
 #include <sys/time.h>
-#ifdef HPUX
-#include <unistd.h>
-#endif
 
 extern	aClient	*client, *local[];
 extern	int	highest_fd;
@@ -550,9 +547,6 @@ char *nick;
 	int	hz = 1, ticpermin;
 	int	umin, smin, usec, ssec;
 
-#    ifdef HPUX
-	hz = sysconf(_SC_CLK_TCK);
-#    endif
 	ticpermin = hz * 60;
 
 	umin = tmsbuf.tms_utime / ticpermin;
@@ -595,13 +589,7 @@ int	count_memory(cptr, nick)
 aClient	*cptr;
 char	*nick;
 {
-#if !defined(AIX) && !defined(NEXT)
-#  ifdef HPUX
-	extern	void	*etext;
-#  else
 	extern	int	etext;
-#  endif
-#endif
 	extern	aChannel	*channel;
 	extern	aClass	*classes;
 	extern	aConfItem	*conf;
@@ -737,11 +725,7 @@ char	*nick;
 		   me.name, nick, totww, totch, totcl, com);
 	sendto_one(cptr, ":%s NOTICE %s :TOTAL: %d sbrk(0)-etext: %d",
 		   me.name, nick, tot,
-#if !defined(AIX) && !defined(NEXT)
 		   (int)sbrk(0)-(int)etext);
-#else
-		   (int)sbrk(0));
-#endif
 	return 0;
 }
 #endif

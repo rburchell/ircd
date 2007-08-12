@@ -20,12 +20,6 @@
 /* Type of host. These should be made redundant somehow. -avalon */
 
 #define	BSD			/* 4.2 BSD, 4.3 BSD, SunOS 3.x, 4.x, Apollo */
-#undef	HPUX			/* HP-UX */
-#undef	ULTRIX			/* Vax Ultrix. */
-#undef	AIX			/* IBM ugly so-called Unix, AIX */
-#undef	MIPS			/* MIPS Unix */
-#undef	SGI			/* SGI Irix */
-#undef	SYSV			/* SYSV stuff - being worked on where poss. */
 
 /* Do these work? I dunno... */
 
@@ -455,15 +449,6 @@
 
 #ifdef	CLIENT_COMPILE
 #undef	SENDQ_ALWAYS
-#endif
-
-#if defined(mips) || defined(PCS)
-#undef SYSV
-#endif
-
-#ifdef MIPS
-#undef BSD
-#define BSD             1       /* mips only works in bsd43 environment */
 #endif
 
 #ifdef sequent                   /* Dynix (sequent OS) */

@@ -41,9 +41,6 @@ char s_msg_id[] = "s_msg.c v2.0 (c) 1988 University of Oulu, Computing Center\
 #ifdef IDENT
 #include "authuser.h"
 #include <errno.h>
-# if defined(MIPS) || defined(pyr)
-extern int errno;   /* stupid mips doesn't include this in errno.h */
-# endif /* mips || pyr */
 #endif /* IDENT */
 
 extern	aClient	*client, me, *local[];

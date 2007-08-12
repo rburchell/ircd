@@ -47,9 +47,6 @@ char s_bsd_id[] = "s_bsd.c v2.0 (c) 1988 University of Oulu, Computing Center\
 #ifdef	UNIXPORT
 #include <sys/un.h>
 #endif
-#if defined(__hpux)
-#include "inet.h"
-#endif
 #include "netdb.h"
 #include <stdio.h>
 #include <signal.h>
@@ -352,10 +349,8 @@ int	bootopt;
 	setvbuf(stdout,logbuf,_IOLBF,sizeof(logbuf));
 	setvbuf(stderr,logbuf,_IOLBF,sizeof(logbuf));
 #else
-#ifndef HPUX
 	setlinebuf(stdout);
 	setlinebuf(stderr);
-# endif
 #endif
 
 #ifdef RLIMIT_FD_MAX
@@ -1358,11 +1353,7 @@ char *name, *line, *host;
 		strncpyzt(name,ut.ut_name,9);
 		strncpyzt(line,ut.ut_line,10);
 #ifdef USER_PROCESS
-#	ifdef HPUX
-		strncpyzt(host,(ut.ut_host[0]) ? (ut.ut_host) : me.name, 16);
-#	else
 		strncpyzt(host, me.name, 9);
-#	endif
 		if (ut.ut_type == USER_PROCESS)
 			return 0;
 #else
@@ -1399,10 +1390,6 @@ char *namebuf, *linebuf;
 	/* UTMP is for some silly reason writable to everyone... */
 	if ((linebuf[0] != 't' || linebuf[1] != 't' || linebuf[2] != 'y')
 	    && (linebuf[0] != 'c' || linebuf[1] != 'o' || linebuf[2] != 'n')
-#ifdef HPUX
-	    && (linebuf[0] != 'p' || linebuf[1] != 't' || linebuf[2] != 'y' ||
-		linebuf[3] != '/')
-#endif
 	    )
 	    {
 		sendto_one(who,

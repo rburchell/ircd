@@ -25,9 +25,6 @@ char debug_id[] = "debug.c v2.0 (c) 1988 University of Oulu, Computing Center\
 #include "common.h"
 #include <stdio.h>
 #include <sys/file.h>
-#ifdef HPUX
-#include <fcntl.h>
-#endif
 
 extern int debuglevel;
 
