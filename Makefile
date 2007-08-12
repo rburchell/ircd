@@ -54,8 +54,8 @@ IRCDMODE = 4711
 MAKE = make 'CFLAGS=${CFLAGS}' 'CC=${CC}' 'IRCDLIBS=${IRCDLIBS}'\
 	'IRCDMODE=${IRCDMODE}'
 SHELL=/bin/sh
-# don't make the client by default, it's broken anyway
-SUBDIRS=common ircd # irc
+
+SUBDIRS=ircd
 
 all:	build
 
