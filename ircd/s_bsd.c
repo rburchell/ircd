@@ -408,22 +408,19 @@ int	bootopt;
 
 void	write_pidfile()
     {
-#ifdef IRCD_PIDFILE
 	int fd;
 	char buff[20];
-	if ((fd = open(IRCD_PIDFILE, O_CREAT|O_WRONLY, 0600))>=0)
+	if ((fd = open("ircd.pid", O_CREAT|O_WRONLY, 0600))>=0)
 	    {
 		bzero(buff, sizeof(buff));
 		sprintf(buff,"%5d\n",getpid());
 		if (write(fd, buff, strlen(buff)) == -1)
-			debug(DEBUG_NOTICE,"Error writing to pid file %s",
-			      IRCD_PIDFILE);
+			debug(DEBUG_NOTICE,"Error writing to ircd.pid");
 		close(fd);
 		return;
 	    }
 	else
-		debug(DEBUG_NOTICE,"Error opening pid file %s", IRCD_PIDFILE);
-#endif
+		debug(DEBUG_NOTICE,"Error opening ircd.pid");
     }
 		
 /*

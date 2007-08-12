@@ -106,7 +106,6 @@
  */
 #define	SPATH "/usr/local/bin/ircd" /* Where the server lives.  */
 #define	LPATH "/tmp/ircd.log" /* Where the debug file lives, if DEBUGMODE */
-#define	PPATH "/usr/local/lib/ircd.pid" /* where the server's pid is */
 
 /* ENABLE_SUMMON
  *
@@ -434,7 +433,6 @@
 
 /* ------------------------- END CONFIGURATION SECTION -------------------- */
 #define	MYNAME SPATH
-#define	IRCD_PIDFILE PPATH
 
 #ifdef DEBUGMODE
 # define LOGFILE LPATH
