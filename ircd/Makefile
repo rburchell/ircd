@@ -44,12 +44,12 @@ CFLAGS= -O -I${INCLUDE}
 OBJS=channel.o ircd.o list.o s_bsd.o s_conf.o s_msg.o s_numeric.o \
      whowas.o s_debug.o class.o hash.o note.o s_misc.o \
      bsd.o dbuf.o packet.o send.o match.o parse.o support.o \
-     m_nick.o
+     m_nick.o m_who.o m_version.o
 
 SRC=channel.c ircd.c list.c s_bsd.c s_conf.c s_msg.c s_numeric.c \
      whowas.c s_debug.c class.c note.c hash.c s_misc.c authuser.c \
      bsd.c dbuf.c packet.c parse.c send.c match.c support.c \
-     m_nick.c
+     m_nick.c m_who.c m_version.c
 
 RESOBJS= ../res/res_init.o ../res/res_comp.o ../res/res_query.o \
 	../res/res_debug.o ../res/res_mkquery.o ../res/res_send.o \
