@@ -36,11 +36,6 @@ char s_msg_id[] = "s_msg.c v2.0 (c) 1988 University of Oulu, Computing Center\
 #include "channel.h"
 #include "stdio.h"
 
-#ifdef IDENT
-#include "authuser.h"
-#include <errno.h>
-#endif /* IDENT */
-
 extern	aClient	*client, me, *local[];
 extern	aClient	*find_server PROTO((char *, aClient *));
 extern	aClient	*find_person PROTO((char *, aClient *));
@@ -64,11 +59,6 @@ extern	char	*get_client_name PROTO((aClient *, int));
 extern	char	*my_name_for_link PROTO((char *, aConfItem *));
 extern	int	highest_fd, debuglevel;
 extern	long	nextping;
-
-#ifdef IDENT
-extern int  auth_fd2();
-extern char *auth_tcpuser3();
-#endif /* IDENT */
 
 extern	char	*date PROTO((long));
 extern	char	*strerror();
@@ -690,13 +680,6 @@ char	*parv[];
 
 	char	*username, *host, *server, *realname;
 	anUser	*user;
-#ifdef IDENT
-        char    *authuser = NULL;
-        unsigned long authlocaladdr,authremoteaddr;
-        unsigned short authlocalport,authremoteport;
-        int authtimeout = AUTHTIMEOUT;
-        int errtmp;
-#endif /* IDENT */
         
  
 	if (parc > 2 && (username = (char *)index(parv[1],'@')))
@@ -737,21 +720,6 @@ char	*parv[];
             else
               {
                 host = sptr->sockhost;
-#ifdef IDENT
-                if (auth_fd2(sptr->fd,
-                             &authlocaladdr,&authremoteaddr,
-                             &authlocalport,&authremoteport) == -1)
-                  {
-                    errtmp=errno;
-                    report_error("authfd2 blew, host %s: %s",sptr);
-                    return exit_client(sptr, sptr, sptr, "authfd2 blew");
-                  }
-                authuser = auth_tcpuser3(authlocaladdr,authremoteaddr,
-                                         authlocalport,authremoteport,
-                                         authtimeout);
-                if (authuser != NULL)
-                  username = authuser;
-#endif /* IDENT */
               }
             server = me.name;
           }
@@ -759,14 +727,6 @@ char	*parv[];
   	user = make_user(sptr);
         user = sptr->user;
 	strncpyzt(user->username, username, sizeof(user->username));
-#ifdef IDENT
-        if ((authuser == NULL) && MyConnect(sptr))
-          {
-            strcpy(sptr->info, "!id "); /* doesn't need strncpy - constant */
-            strncat(sptr->info, realname, sizeof(sptr->info)-5);
-          }
-        else
-#endif /* !IDENT */
           strncpyzt(sptr->info, realname, sizeof(sptr->info));
 	strncpyzt(user->server, server, sizeof(user->server));
 	strncpyzt(user->host, host, sizeof(user->host));

@@ -135,9 +135,7 @@ static	int	AcceptNewConnections = TRUE;
 **	cptr	if not NULL, is the *LOCAL* client associated with
 **		the error.
 */
-#ifndef IDENT
 static
-#endif /* not IDENT */;
 int	report_error(text, cptr)
 char	*text;
 aClient *cptr;

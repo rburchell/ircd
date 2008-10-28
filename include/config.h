@@ -276,30 +276,6 @@
  */
 #undef	UNIXPORT
 
-/*
- * define IDENT to use the RFC931 identification server to verify usernames
- * note that you also need to edit ircd/Makefile to link (or not link) in
- * the authuser library code.
- *
- * AUTHTIMEOUT is the number of seconds to time out a connection that neither
- * accepts or refuses.  3s is good.  Most sites will either accept within a
- * short time frame, or refuse immediately.
- *
- * RFC931 servers are available on ftp.lysator.liu.se (for Suns, HPs, some
- * others -- pidentd-1.7 is the most recent version as of 920519) and also
- * ftp.uu.net (networking/authd/rfc931-authd.3.01.shar.Z -- this is far more
- * portable than pidentd, but slower)
- *
- * #defining IDENT adds an additional measure of security by making it harder
- * to spoof usernames with hacked clients and/or telnet-to-the-port.
- *
- * I recommend defining IDENT and leaving AUTHTIMEOUT at 3.  -ckd@eff.org
- */
-#undef	IDENT
-#ifdef	IDENT
-#define	AUTHTIMEOUT 3
-#endif /* IDENT */
-
 /*   STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP  */
 
 /* You shouldn't change anything below this line, unless absolutely needed. */
