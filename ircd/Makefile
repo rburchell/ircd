@@ -47,7 +47,7 @@ OBJS=channel.o ircd.o list.o s_bsd.o s_conf.o s_msg.o s_numeric.o \
      m_nick.o m_who.o m_version.o
 
 SRC=channel.c ircd.c list.c s_bsd.c s_conf.c s_msg.c s_numeric.c \
-     whowas.c s_debug.c class.c note.c hash.c s_misc.c authuser.c \
+     whowas.c s_debug.c class.c note.c hash.c s_misc.c \
      bsd.c dbuf.c packet.c parse.c send.c match.c support.c \
      m_nick.c m_who.c m_version.c
 
@@ -68,18 +68,18 @@ ircd: $(RESOBJS) $(OBJS) ../include/patchlevel.h
 		-o ircd $(IRCDLIBS)
 	chmod $(IRCDMODE) ircd
 
-auth: $(OBJS) authuser.o ../include/patchlevel.h
+auth: $(OBJS) ../include/patchlevel.h
 	$(SHELL) version.c.SH
 	$(CC) $(CFLAGS) -c version.c
-	$(CC) $(CFLAGS) $(OBJS) authuser.o version.o \
+	$(CC) $(CFLAGS) $(OBJS) version.o \
 		-o ircd $(IRCDLIBS)
 	chmod $(IRCDMODE) ircd
 
 
-authbind: $(OBJS) $(RESOBJS) authuser.o ../include/patchlevel.h
+authbind: $(OBJS) $(RESOBJS) ../include/patchlevel.h
 	$(SHELL) version.c.SH
 	$(CC) $(CFLAGS) -c version.c
-	$(CC) $(CFLAgS) $(OBJS) $(RESOBJS) authuser.o version.o \
+	$(CC) $(CFLAgS) $(OBJS) $(RESOBJS) version.o \
 		-o ircd $(IRCDLIBS)
 	chmod $(IRCDMODE) ircd
 
@@ -150,7 +150,7 @@ note.o: ../include/struct.h ../include/numeric.h ../include/config.h
 s_misc.o: ../include/struct.h ../include/config.h ../include/dbuf.h
 s_msg.o: ../include/struct.h ../include/config.h
 s_msg.o: ../include/dbuf.h ../include/sys.h channel.h
-s_msg.o: ../include/msg.h ../include/numeric.h ../include/authuser.h
+s_msg.o: ../include/msg.h ../include/numeric.h
 s_numeric.o: ../include/config.h ../include/sys.h
 s_numeric.o: ../include/struct.h
 s_numeric.o: ../include/dbuf.h ../include/numeric.h
@@ -166,7 +166,6 @@ res_debug.o: ../include/resolv.h ../include/nameser.h
 res_query.o: ../include/resolv.h ../include/nameser.h
 res_mkquery.o: ../include/resolv.h ../include/nameser.h
 res_send.o: ../include/resolv.h ../include/nameser.h
-authuser.o: ../include/authuser.h
 bsd.o: ../include/common.h ../include/sys.h ../include/config.h
 dbuf.o: ../include/config.h ../include/common.h ../include/dbuf.h
 dbuf.o: ../include/sys.h
